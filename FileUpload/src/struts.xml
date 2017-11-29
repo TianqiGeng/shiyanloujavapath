@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN" "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+    <!-- <constant name="struts.action.extension" value="action" />
+    <constant name="struts.devMode" value="true" />
+    <constant name="struts.configuration.xml.reload" value="true" />
+    <constant name="struts.serve.static.browserCache" value="false" />
+    <constant name="struts.i18n.encoding" value="utf-8" />
+    <constant name="struts.i18n.reload" value="true" />
+    <constant name="struts.multipart.maxSize" value="104857600" />
+    <constant name="struts.enable.DynamicMethodInvocation" value="true" />
+    <constant name="struts.enable.SlashesInActionNames" value="false" />
+    <constant name="struts.tag.altSyntax" value="true" />
+    <constant name="struts.dispatcher.parametersWorkaround" value="false" /> -->
+    <!-- 	设置常量实现动态调用 -->
+    <constant name="struts.enable.DynamicMethodInvocation" value="true" />
+    <package name="basePackage" extends="struts-default">
+		<action name="upload" class="cn.tq.upload.UploadAction" method="execute">
+			<!-- param设置了我们在UploadAction.java中定义的savePath的值，result则指定了不同情况的响应页面 -->
+			<param name="savePath">/uploadFiles</param>
+			<result name="success">/success.jsp</result>
+			<result name="error">/error.jsp</result>
+		</action>
+		<action name="multiUpload" class="cn.tq.upload.MultiUploadAction" method="execute">
+			<interceptor-ref name="fileUpload">
+				<!--指定了上传文件的类型  -->
+				<param name="allowedTypes">text/plain,image/png,image/gif,iamge/ipeg</param>
+				<!--指定了上传文件的大小 ，单位为bytes -->
+				<param name="maximumSize">20480</param>
+			</interceptor-ref>
+			<!--设定默认过滤器  -->
+			 <interceptor-ref name="defaultStack"></interceptor-ref>
+			<param name="savePath">/uploadMultiFiles</param>
+			<result name="success">/success2.jsp</result>
+			<result name="error">/error2.jsp</result>
+			<result name="input">/index2.jsp</result>
+		</action>
+		<action name="download" class="cn.tq.upload.DownloadAction" method="execute">
+				<!-- downloadPath为我们上传的savePath  -->
+			 <param name="downloadPath">/uploadFiles</param>
+				<!-- success对应为"stream"流  -->
+				<result name="success" type="stream">
+					 <param name="inputName">targetFile</param>
+					<!-- contentDisposition设置了下载文件的文件名  -->
+					<param name="contentDisposition">attachment;filename=${filename}</param> 
+					<param name="bufferSize">4096</param>
+				</result>
+		</action>
+    </package>
+
+</struts>
